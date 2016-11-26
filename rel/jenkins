@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+export CONFIG_DIR=/srv/app/shared/config
+export RELEASE_DIR=./rel/app/releases/
+export PREV_APP_VERSION=`ssh mix@10.0.0.5 cat /srv/app/releases/start_erl.data | cut -d' ' -f2`
+export APP_VERSION=`date +%Y.%m.%d%H%M`
+
+touch mix.exs                   # so that new app_version is picked
+npm install                     # for brunch
+mix deps.get
+MIX_ENV=prod mix release --env=prod --upgrade --upfrom=$PREV_APP_VERSION
+scp -r $RELEASE_DIR/$APP_VERSION www@5.9.58.133:/srv/app/releases/$APP_VERSION
+ssh mix@10.0.0.5 /srv/app/bin/phoenix_app upgrade $APP_VERSION

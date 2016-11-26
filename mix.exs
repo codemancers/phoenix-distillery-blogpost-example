@@ -3,7 +3,7 @@ defmodule PhoenixApp.Mixfile do
 
   def project do
     [app: :phoenix_app,
-     version: "0.0.1",
+     version: (if Mix.env == :prod, do: System.get_env("APP_VERSION"), else: "0.0.1"),
      elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,

@@ -1,8 +1,45 @@
+defmodule PhoenixApp.PhoenixDigestTask do
+  use Mix.Releases.Plugin
+
+  def before_assembly(%Release{} = _release) do
+    info "before assembly!"
+    # NOTE: If your app has brunch, you can enable this code.
+    # case System.cmd("npm", ["run", "deploy"]) do
+    #   {output, 0} ->
+    #     info output
+    #     Mix.Task.run("phoenix.digest")
+    #     nil
+    #   {output, error_code} ->
+    #     {:error, output, error_code}
+    # end
+  end
+
+  def after_assembly(%Release{} = _release) do
+    info "after assembly!"
+    nil
+  end
+
+  def before_package(%Release{} = _release) do
+    info "before package!"
+    nil
+  end
+
+  def after_package(%Release{} = _release) do
+    info "after package!"
+    nil
+  end
+
+  def after_cleanup(%Release{} = _release) do
+    info "after cleanup!"
+    nil
+  end
+end
+
 use Mix.Releases.Config,
     # This sets the default release built by `mix release`
     default_release: :default,
     # This sets the default environment used by `mix release`
-    default_environment: :dev
+    default_environment: :prod
 
 # For a full list of config options for both releases
 # and environments, visit https://hexdocs.pm/distillery/configuration.html
@@ -20,6 +57,7 @@ environment :dev do
 end
 
 environment :prod do
+  set plugins: [PhoenixApp.PhoenixDigestTask]
   set include_erts: true
   set include_src: false
   set cookie: :"ZSP6[.GrHi$$W]K7UA2cxkhCt,f]Xel^)=37N)VNr(<4Udh{iBL{y)C*)jiDpc31"
@@ -33,4 +71,3 @@ end
 release :phoenix_app do
   set version: current_version(:phoenix_app)
 end
-
